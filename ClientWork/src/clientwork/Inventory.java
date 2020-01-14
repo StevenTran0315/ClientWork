@@ -5,16 +5,20 @@
  */
 package clientwork;
 
-/**
- *
+/*
  * @author S331461152
  */
 public class Inventory extends javax.swing.JFrame {
+
+    static Object[][] data;
+    static int RowNum = 5;
 
     /**
      * Creates new form NewJFrame
      */
     public Inventory() {
+        data = new Object[RowNum][5];
+        
         initComponents();
     }
 
@@ -28,7 +32,7 @@ public class Inventory extends javax.swing.JFrame {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jTable1 =  new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
@@ -40,28 +44,9 @@ public class Inventory extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jTable1.setAutoCreateRowSorter(true);
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
-            },
+            data,
             new String [] {
                 "Product", "Date", "Quantity", "Value", "Notes"
             }
@@ -193,6 +178,8 @@ public class Inventory extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+        RowNum++;
+        Update();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
@@ -200,39 +187,31 @@ public class Inventory extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        // TODO add your handling code here:
+
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-             jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
-            },
-            new String [] {
-                "Product", "Date", "Quantity", "Value", "Notes"
-            }
-        ));
+      jTable1.removeAll();
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    private static void Update(){
+       data = new Object[RowNum][5];
+       for (int i = 0; i < RowNum-1; i++) {
+            data[i][0] = jTable1.getValueAt(i, 0);
+            data[i][1] = jTable1.getValueAt(i, 1);
+            data[i][2] = jTable1.getValueAt(i, 2);
+            data[i][3] = jTable1.getValueAt(i, 3);
+            data[i][4] = jTable1.getValueAt(i, 4);
+        }
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+                data,
+                new String[]{
+                    "Product", "Date", "Quantity", "Value", "Notes"
+                }
+        ));
+    }
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
         new Import().setVisible(true);
@@ -243,7 +222,7 @@ public class Inventory extends javax.swing.JFrame {
         System.exit(0);
 
     }//GEN-LAST:event_jButton6ActionPerformed
-    
+
     /**
      * @param args the command line arguments
      */
@@ -276,6 +255,7 @@ public class Inventory extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new Inventory().setVisible(true);
+               
             }
         });
     }
@@ -290,6 +270,6 @@ public class Inventory extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private static javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
 }
