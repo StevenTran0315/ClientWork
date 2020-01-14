@@ -10,7 +10,9 @@ package clientwork;
  * @author S331461152
  */
 public class Import extends javax.swing.JFrame {
-
+String email;
+String subject;
+String body;
     /**
      * Creates new form Import
      */
@@ -161,6 +163,13 @@ public class Import extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        email = jTextField1.getText();
+        subject = jTextField2.getText();
+        body = jTextArea1.getText();
+        
+        Email Email = new Email();
+        
+        Email.mail(email, subject, body);
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
 
