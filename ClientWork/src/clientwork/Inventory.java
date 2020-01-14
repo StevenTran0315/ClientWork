@@ -18,7 +18,7 @@ public class Inventory extends javax.swing.JFrame {
      */
     public Inventory() {
         data = new Object[RowNum][5];
-        
+
         initComponents();
     }
 
@@ -179,7 +179,7 @@ public class Inventory extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         RowNum++;
-        Update();
+        Update(1);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
@@ -192,19 +192,31 @@ public class Inventory extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-      jTable1.removeAll();
+        Update(2);
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    private static void Update(){
-       data = new Object[RowNum][5];
-       for (int i = 0; i < RowNum-1; i++) {
-            data[i][0] = jTable1.getValueAt(i, 0);
-            data[i][1] = jTable1.getValueAt(i, 1);
-            data[i][2] = jTable1.getValueAt(i, 2);
-            data[i][3] = jTable1.getValueAt(i, 3);
-            data[i][4] = jTable1.getValueAt(i, 4);
-        }
+    private static void Update(int Usage) {
+        data = new Object[RowNum][5];
 
+        switch (Usage) {
+            case 1:
+                for (int i = 0; i < RowNum - 1; i++) {
+                    data[i][0] = jTable1.getValueAt(i, 0);
+                    data[i][1] = jTable1.getValueAt(i, 1);
+                    data[i][2] = jTable1.getValueAt(i, 2);
+                    data[i][3] = jTable1.getValueAt(i, 3);
+                    data[i][4] = jTable1.getValueAt(i, 4);
+                }
+                break;
+            case 2:
+                for (int i = 0; i < RowNum - 1; i++) {
+                    data[i][0] = null;
+                    data[i][1] = null;
+                    data[i][2] = null;
+                    data[i][3] = null;
+                    data[i][4] = null;
+                }
+        }
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
                 data,
                 new String[]{
@@ -255,7 +267,7 @@ public class Inventory extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new Inventory().setVisible(true);
-               
+
             }
         });
     }
