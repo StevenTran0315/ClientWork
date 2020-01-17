@@ -8,10 +8,29 @@ package clientwork;
 /*
  * @author S331461152
  */
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import java.io.ObjectInputStream;
+import java.util.Set;
+import java.util.Vector;
+import javax.swing.table.DefaultTableModel;
+
 public class Inventory extends javax.swing.JFrame {
 
     static Object[][] data;
-    static int RowNum = 5;
+    static int RowNum = 0;
 
     /**
      * Creates new form NewJFrame
@@ -20,6 +39,31 @@ public class Inventory extends javax.swing.JFrame {
         data = new Object[RowNum][5];
 
         initComponents();
+        readDataFromFile();
+    }
+
+    private void readDataFromFile() {
+        File file = new File("dataTable.dat");
+        if (file.exists()){
+            
+        try (DataInputStream in = new DataInputStream(new BufferedInputStream(new FileInputStream(file)));) {
+            RowNum = in.readInt();
+            
+            DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+            for (int row = 0; row < RowNum; ++row) {
+                Object[] rowData = new Object[5];
+                rowData[0] = in.readUTF();
+                rowData[1] = in.readUTF();
+                rowData[2] = in.readInt();
+                rowData[3] = in.readDouble();
+                rowData[4] = in.readUTF();
+                model.addRow(rowData);
+
+            }
+        } catch (IOException e) {
+            System.out.println("Error");
+        }
+        }
     }
 
     /**
@@ -188,6 +232,23 @@ public class Inventory extends javax.swing.JFrame {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
 
+        try (DataOutputStream out = new DataOutputStream(new BufferedOutputStream(new FileOutputStream("dataTable.dat")));) {
+            out.writeInt(jTable1.getRowCount());
+            
+            for (int increment = 0; increment < jTable1.getRowCount(); ++increment) {
+                out.writeUTF((String) jTable1.getValueAt(increment, 0));
+                out.writeUTF((String) jTable1.getValueAt(increment, 1));
+                out.writeInt((Integer) jTable1.getValueAt(increment, 2));
+                out.writeDouble((Double) jTable1.getValueAt(increment, 3));
+                out.writeUTF((String) jTable1.getValueAt(increment, 4));
+
+            }
+        } catch (IOException e) {
+            System.out.println("Error");
+        }
+
+
+
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -207,6 +268,12 @@ public class Inventory extends javax.swing.JFrame {
                     data[i][3] = jTable1.getValueAt(i, 3);
                     data[i][4] = jTable1.getValueAt(i, 4);
                 }
+                data[RowNum - 1][0] = "";
+                data[RowNum - 1][1] = "";
+                data[RowNum - 1][2] = 0;
+                data[RowNum - 1][3] = 0d;
+                data[RowNum - 1][4] = "";
+
                 break;
             case 2:
                 for (int i = 0; i < RowNum - 1; i++) {
@@ -224,6 +291,7 @@ public class Inventory extends javax.swing.JFrame {
                 }
         ));
     }
+
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
         new Import().setVisible(true);
