@@ -276,12 +276,12 @@ public class Inventory extends javax.swing.JFrame {
 
                 break;
             case 2:
-                for (int i = 0; i < RowNum - 1; i++) {
-                    data[i][0] = null;
-                    data[i][1] = null;
-                    data[i][2] = null;
-                    data[i][3] = null;
-                    data[i][4] = null;
+                for (int i = 0; i < RowNum; i++) {
+                    data[i][0] = "";
+                    data[i][1] = "";
+                    data[i][2] = 0;
+                    data[i][3] = 0d;
+                    data[i][4] = "";
                 }
         }
         jTable1.setModel(new javax.swing.table.DefaultTableModel(

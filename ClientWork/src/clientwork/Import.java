@@ -5,6 +5,14 @@
  */
 package clientwork;
 
+import static clientwork.Inventory.RowNum;
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author S331461152
@@ -13,11 +21,15 @@ public class Import extends javax.swing.JFrame {
 String email;
 String subject;
 String body;
+ static Object[][] data;
+     static int RowNum = 0;
     /**
      * Creates new form Import
      */
     public Import() {
+        data = new Object[RowNum][2];
         initComponents();
+        readData();
     }
 
     /**
@@ -45,12 +57,7 @@ String body;
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
-            },
+            data,
             new String [] {
                 "Product", "Date", "Quantity", "Value", "Import"
             }
@@ -158,11 +165,42 @@ String body;
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+      private void readData() {
+        File file = new File("dataTable.dat");
+        if (file.exists()){
+            
+        try (DataInputStream in = new DataInputStream(new BufferedInputStream(new FileInputStream(file)));) {
+            RowNum = in.readInt();
+            
+            DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+            for (int row = 0; row < RowNum; ++row) {
+                Object[] rowData = new Object[5];
+                rowData[0] = in.readUTF();
+                rowData[1] = in.readUTF();
+                rowData[2] = in.readInt();
+                rowData[3] = in.readDouble();
+                model.addRow(rowData);
+                rowData[4] = in.readUTF();
+
+            }
+        } catch (IOException e) {
+            System.out.println("Error");
+        }
+        }
+    }
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+           for (int i = 0; i < RowNum; i++) {
+                    if(jTable1.getValueAt(i, 4) == null){
+                        
+                    }
+                    else{
+                        jTextArea1.setText((String) jTable1.getValueAt(i,0));
+                    }
+           }
         email = jTextField1.getText();
         subject = jTextField2.getText();
         body = jTextArea1.getText();
@@ -175,7 +213,8 @@ String body;
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-         dispose();
+        RowNum = 0; 
+        dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
