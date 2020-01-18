@@ -56,8 +56,8 @@ public class Inventory extends javax.swing.JFrame {
                 Object[] rowData = new Object[5];
                 rowData[0] = in.readUTF();
                 rowData[1] = in.readUTF();
-                rowData[2] = in.readInt();
-                rowData[3] = in.readDouble();
+                rowData[2] = in.readUTF();
+                rowData[3] = in.readUTF();
                 rowData[4] = in.readUTF();
                 model.addRow(rowData);
 
@@ -98,7 +98,7 @@ public class Inventory extends javax.swing.JFrame {
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Double.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -233,16 +233,6 @@ public class Inventory extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        /*
-         try {
-            FileOutputStream arrWrite = new FileOutputStream ("dataTable.txt");
-            ObjectOutputStream outStream = new ObjectOutputStream (arrWrite);
-            outStream.writeObject(data);
-            outStream.close();
-        } catch (IOException e) {
-            System.out.println("Crash and Burn");
-        }
-         */
 
         try (DataOutputStream out = new DataOutputStream(new BufferedOutputStream(new FileOutputStream("dataTable.dat")));) {
             out.writeInt(jTable1.getRowCount());
@@ -250,8 +240,8 @@ public class Inventory extends javax.swing.JFrame {
             for (int increment = 0; increment < jTable1.getRowCount(); ++increment) {
                 out.writeUTF((String) jTable1.getValueAt(increment, 0));
                 out.writeUTF((String) jTable1.getValueAt(increment, 1));
-                out.writeInt((Integer) jTable1.getValueAt(increment, 2));
-                out.writeDouble((Double) jTable1.getValueAt(increment, 3));
+                out.writeUTF((String) jTable1.getValueAt(increment, 2));
+                out.writeUTF((String) jTable1.getValueAt(increment, 3));
                 out.writeUTF((String) jTable1.getValueAt(increment, 4));
 
             }
@@ -279,18 +269,18 @@ public class Inventory extends javax.swing.JFrame {
                 }
                 data[RowNum - 1][0] = "";
                 data[RowNum - 1][1] = "";
-                data[RowNum - 1][2] = 0;
-                data[RowNum - 1][3] = 0d;
+                data[RowNum - 1][2] = "";
+                data[RowNum - 1][3] = "";
                 data[RowNum - 1][4] = "";
 
                 break;
             case 2:
-                for (int i = 0; i < RowNum - 1; i++) {
-                    data[i][0] = null;
-                    data[i][1] = null;
-                    data[i][2] = null;
-                    data[i][3] = null;
-                    data[i][4] = null;
+                for (int i = 0; i < RowNum; i++) {
+                    data[i][0] = "";
+                    data[i][1] = "";
+                    data[i][2] = "";
+                    data[i][3] = "";
+                    data[i][4] = "";
                 }
         }
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
