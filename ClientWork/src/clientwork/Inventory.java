@@ -29,6 +29,7 @@ import javax.swing.table.DefaultTableModel;
 
 public class Inventory extends javax.swing.JFrame {
 
+    //Creates array and RowNum which starts with 0 rows
     static Object[][] data;
     static int RowNum = 0;
 
@@ -36,33 +37,40 @@ public class Inventory extends javax.swing.JFrame {
      * Creates new form NewJFrame
      */
     public Inventory() {
+        //Creates data array that has the same dimensions as the onscreen table
         data = new Object[RowNum][5];
-
+        // On start up intialize components, and read the file to open any saved data
         initComponents();
         readDataFromFile();
     }
 
     private void readDataFromFile() {
+        //Create dataTable file
         File file = new File("dataTable.dat");
-        if (file.exists()){
-            
-        try (DataInputStream in = new DataInputStream(new BufferedInputStream(new FileInputStream(file)));) {
-            RowNum = in.readInt();
-            
-            DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-            for (int row = 0; row < RowNum; ++row) {
-                Object[] rowData = new Object[5];
-                rowData[0] = in.readUTF();
-                rowData[1] = in.readUTF();
-                rowData[2] = in.readInt();
-                rowData[3] = in.readDouble();
-                rowData[4] = in.readUTF();
-                model.addRow(rowData);
 
+        //Checks if dataTable file exists
+        if (file.exists()) {
+
+            try (DataInputStream in = new DataInputStream(new BufferedInputStream(new FileInputStream(file)));) {
+                //Finds number of rows
+                RowNum = in.readInt();
+
+                DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+                //For each row, get data from file and place it in an array
+                for (int row = 0; row < RowNum; ++row) {
+                    Object[] rowData = new Object[5];
+                    rowData[0] = in.readUTF();
+                    rowData[1] = in.readUTF();
+                    rowData[2] = in.readUTF();
+                    rowData[3] = in.readUTF();
+                    rowData[4] = in.readUTF();
+                    //add Rowarray to jTable
+                    model.addRow(rowData);
+
+                }
+            } catch (IOException e) {
+                System.out.println("Error");
             }
-        } catch (IOException e) {
-            System.out.println("Error");
-        }
         }
     }
 
@@ -82,7 +90,6 @@ public class Inventory extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
@@ -96,7 +103,7 @@ public class Inventory extends javax.swing.JFrame {
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Double.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -162,13 +169,6 @@ public class Inventory extends javax.swing.JFrame {
                 .addGap(28, 28, 28))
         );
 
-        jButton5.setText("Back");
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
-            }
-        });
-
         jButton6.setText("Exit");
         jButton6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -193,8 +193,6 @@ public class Inventory extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jButton5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton6)
                         .addGap(39, 39, 39))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -211,9 +209,7 @@ public class Inventory extends javax.swing.JFrame {
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton5)
-                    .addComponent(jButton6))
+                .addComponent(jButton6)
                 .addContainerGap())
         );
 
@@ -221,25 +217,23 @@ public class Inventory extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+        // Increases the row number by 1 and Updates the table with an additional empty row.
         RowNum++;
         Update(1);
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton5ActionPerformed
-
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-
+        //Tries to output to dataTable file, if not produces an error.
         try (DataOutputStream out = new DataOutputStream(new BufferedOutputStream(new FileOutputStream("dataTable.dat")));) {
+            //Writes the row count
             out.writeInt(jTable1.getRowCount());
             
+            // Writes out all the values in the array, row by row.
             for (int increment = 0; increment < jTable1.getRowCount(); ++increment) {
                 out.writeUTF((String) jTable1.getValueAt(increment, 0));
                 out.writeUTF((String) jTable1.getValueAt(increment, 1));
-                out.writeInt((Integer) jTable1.getValueAt(increment, 2));
-                out.writeDouble((Double) jTable1.getValueAt(increment, 3));
+                out.writeUTF((String) jTable1.getValueAt(increment, 2));
+                out.writeUTF((String) jTable1.getValueAt(increment, 3));
                 out.writeUTF((String) jTable1.getValueAt(increment, 4));
 
             }
@@ -248,19 +242,22 @@ public class Inventory extends javax.swing.JFrame {
         }
 
 
-
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
+        // Runs the 2nd function of Update, which sets all the cells to empty strings.
         Update(2);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private static void Update(int Usage) {
+        
+        //Reinstantiates the data Array with the new Row value
         data = new Object[RowNum][5];
 
+        //Update has two uses, 1 is the add row usage, and 2 is to clears
         switch (Usage) {
             case 1:
+                //Writes out all the values of the table into the data Array
                 for (int i = 0; i < RowNum - 1; i++) {
                     data[i][0] = jTable1.getValueAt(i, 0);
                     data[i][1] = jTable1.getValueAt(i, 1);
@@ -268,22 +265,28 @@ public class Inventory extends javax.swing.JFrame {
                     data[i][3] = jTable1.getValueAt(i, 3);
                     data[i][4] = jTable1.getValueAt(i, 4);
                 }
+                
+                //For the added row, make all the values equal to empty strings.
                 data[RowNum - 1][0] = "";
                 data[RowNum - 1][1] = "";
-                data[RowNum - 1][2] = 0;
-                data[RowNum - 1][3] = 0d;
+                data[RowNum - 1][2] = "";
+                data[RowNum - 1][3] = "";
                 data[RowNum - 1][4] = "";
 
                 break;
             case 2:
-                for (int i = 0; i < RowNum - 1; i++) {
-                    data[i][0] = null;
-                    data[i][1] = null;
-                    data[i][2] = null;
-                    data[i][3] = null;
-                    data[i][4] = null;
+                
+                //Make every row / column values equal to empty strigns to clear.
+                for (int i = 0; i < RowNum; i++) {
+                    data[i][0] = "";
+                    data[i][1] = "";
+                    data[i][2] = "";
+                    data[i][3] = "";
+                    data[i][4] = "";
                 }
         }
+        
+        //Updates the visual table with the new values / row number
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
                 data,
                 new String[]{
@@ -293,12 +296,15 @@ public class Inventory extends javax.swing.JFrame {
     }
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
+        // Opens the import screen and closes this screen. Resets the RowNum so new empty cells dont get made on top of the data when reopened.
+        RowNum = 0;
         new Import().setVisible(true);
+        dispose();
+
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        // TODO add your handling code here:
+        // Exits the program
         System.exit(0);
 
     }//GEN-LAST:event_jButton6ActionPerformed
@@ -345,7 +351,6 @@ public class Inventory extends javax.swing.JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
