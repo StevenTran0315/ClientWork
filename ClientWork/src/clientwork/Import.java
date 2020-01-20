@@ -12,22 +12,33 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import javax.swing.table.DefaultTableModel;
+import java.util.ArrayList;
 
 /**
  *
  * @author S331461152
  */
 public class Import extends javax.swing.JFrame {
-String email;
-String subject;
-String body;
- static Object[][] data;
-     static int RowNum = 0;
+
+    // Parameters for sending an email
+    String email;
+    String subject;
+    String body;
+
+    //Creates array and RowNum which starts with 0 rows
+    static Object[][] data;
+    static int RowNum = 0;
+
+    //ArrayList to store products they want to import
+    ArrayList<String> Products = new ArrayList<String>();
+
     /**
      * Creates new form Import
      */
     public Import() {
+        //Creates data array that has the same dimensions as the onscreen table
         data = new Object[RowNum][2];
+        // On start up intialize components, and read the file to open any saved data
         initComponents();
         readData();
     }
@@ -63,7 +74,7 @@ String body;
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Double.class, java.lang.Boolean.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Boolean.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -165,56 +176,70 @@ String body;
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-      private void readData() {
+    private void readData() {
+        //Create dataTable file if it doesnt exist
         File file = new File("dataTable.dat");
-        if (file.exists()){
-            
-        try (DataInputStream in = new DataInputStream(new BufferedInputStream(new FileInputStream(file)));) {
-            RowNum = in.readInt();
-            
-            DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-            for (int row = 0; row < RowNum; ++row) {
-                Object[] rowData = new Object[5];
-                rowData[0] = in.readUTF();
-                rowData[1] = in.readUTF();
-                rowData[2] = in.readInt();
-                rowData[3] = in.readDouble();
-                model.addRow(rowData);
-                rowData[4] = in.readUTF();
 
+        //Checks if dataTable file exists
+        if (file.exists()) {
+
+            try (DataInputStream in = new DataInputStream(new BufferedInputStream(new FileInputStream(file)));) {
+                //Finds number of rows
+                RowNum = in.readInt();
+
+                DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+                //For each row, get data from file and place it in an array
+                for (int row = 0; row < RowNum; ++row) {
+                    Object[] rowData = new Object[5];
+                    rowData[0] = in.readUTF();
+                    rowData[1] = in.readUTF();
+                    rowData[2] = in.readUTF();
+                    rowData[3] = in.readUTF();
+                    //add Rowarray to jTable
+                    model.addRow(rowData);
+                    //adds the row before looking at the last value as it is not needed in this table, but must be passed over so values are properly aligned
+                    rowData[4] = in.readUTF();
+
+                }
+            } catch (IOException e) {
+                System.out.println("Error");
             }
-        } catch (IOException e) {
-            System.out.println("Error");
-        }
         }
     }
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        // TODO add your handling code here:
+        // Textfield for the body, does need any actions performed
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-           for (int i = 0; i < RowNum; i++) {
-                    if(jTable1.getValueAt(i, 4) == null){
-                        
-                    }
-                    else{
-                        jTextArea1.setText((String) jTable1.getValueAt(i,0));
-                    }
-           }
+      
+        //Checks all the last values of each row to see if they want to import
+        for (int i = 0; i < RowNum; i++) {
+            if (jTable1.getValueAt(i, 4) == null) {
+
+            } else {
+                // If they want to import that product, get its name and add to the ArrayList of products
+                Products.add((String) jTable1.getValueAt(i, 0));
+            }
+        }
+
+        // Set the email parameters to the text from the text fields
         email = jTextField1.getText();
         subject = jTextField2.getText();
-        body = jTextArea1.getText();
-        
+        // For the body adds a sentence at the end telling the supplier what products they want
+        body = jTextArea1.getText() + " Your Customer would like these products: " + Products;
+
+        // Instantiates an object of the email class
         Email Email = new Email();
-        
+
+        // Sends the email out to the supplier
         Email.mail(email, subject, body);
-        // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-        RowNum = 0; 
+        // Opens the inventory screen and closes this screen. Resets the RowNum so new empty cells dont get made on top of the data when reopened.
+        RowNum = 0;
         dispose();
+        new Inventory().setVisible(true);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
